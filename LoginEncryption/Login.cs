@@ -10,8 +10,7 @@ namespace LoginEncryption
 {
     public class Login
     {
-        User user1 = new User();
-        User user2 = new User();
+        List<User> users = new List<User>();
         // Test login system
         public void LoginSystem()
         {
@@ -34,13 +33,21 @@ namespace LoginEncryption
             Console.Write("Password:");
             string password = Console.ReadLine();
 
-            if(user1.UserName == userName)
+            foreach (User user in users)
             {
-                if(BC.Verify(password + user1.PasswordSalt, user1.PasswordHash))
+                if(user.UserName == userName)
                 {
-                    Console.WriteLine("Login success. Press any key to continue.");
-                    Console.ReadKey();
-                    return true;
+                    if (BC.Verify(password + user.PasswordSalt, user.PasswordHash))
+                    {
+                        Console.WriteLine("Login success. Press any key to continue.");
+                        Console.ReadKey();
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Username or password is wrong!");
+                        Console.ReadKey();
+                    }
                 }
             }
             return false;
@@ -48,6 +55,7 @@ namespace LoginEncryption
 
         public bool Registration()
         {
+            User user = new User();
             string salt = BC.GenerateSalt();
             Console.WriteLine("USER REGISTRATION");
             Console.WriteLine("Please enter a user name and a password below.");
@@ -66,10 +74,10 @@ namespace LoginEncryption
             }
 
             string passwordHash = BC.HashPassword(password + salt, workFactor: 15);
-            user1.UserName = userName;
-            user1.PasswordHash = passwordHash;
-            user1.PasswordSalt = salt;
-
+            user.UserName = userName;
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = salt;
+            users.Add(user);
             return true;
         }
 
@@ -86,7 +94,7 @@ namespace LoginEncryption
                 {
                     Console.WriteLine(menuArr[i]);
                 }
-                ConsoleKey userInput = Console.ReadKey().Key;
+                ConsoleKey userInput = Console.ReadKey(true).Key;
 
                 switch (userInput)
                 {
@@ -100,6 +108,7 @@ namespace LoginEncryption
                         break;
                     case ConsoleKey.E:
                         showMenu = false;
+                        Console.WriteLine("You chose to exit the program. Press any key to continue.");
                         break;
                     default:
                         Console.WriteLine("Please enter a valid choice.");
