@@ -16,7 +16,7 @@ namespace LoginEncryption.Tests
             Login userLogin = new Login();
             bool expected = true;
             // Act
-            bool actual = userLogin.HandleInput("Test");
+            bool actual = userLogin.HandleInput("Test", "1234");
             // Assert
             Assert.Equal(expected, actual);
         }
